@@ -11,6 +11,9 @@ delta = {  # 練習３：移動量辞書
     pg.K_LEFT: (-5, 0),
     pg.K_RIGHT: (+5, 0),
 }
+
+
+kasoku = [a for a in range(1,11)] #演習3: 加速を1～10の段階で変化させる
  
 def check_bound(obj_rct: pg.Rect):
     """
@@ -35,6 +38,16 @@ def main():
     kk_img = pg.transform.rotozoom(kk_img, 0, 2.0)
     kk_rct = kk_img.get_rect()
     kk_rct.center = (900, 400)
+    """GAMEOVER"""
+    kkOVER_img = pg.image.load("ex02/fig/8.png")
+    """こうかとんrotozoom"""
+    kk2_img = pg.transform.flip(kk_img, True, False)
+    kk2_img = pg.transform.rotozoom(kk_img, 90, 1.0)
+    kk3_img = pg.transform.flip(kk_img, True, False)
+    kk3_img = pg.transform.rotozoom(kk_img, -90, 1.0)
+    kk4_img = pg.transform.flip(kk_img, True, False)
+    kk4_img = pg.transform.rotozoom(kk_img, 180, 1.0)
+    houkou = {(0,-5): kk2_img, (0, +5): kk3_img, (0, -5) : kk4_img}
     """爆弾"""
     clock = pg.time.Clock() #練習1:爆弾Surface作成
     bd_img = pg.Surface((20, 20))
@@ -53,35 +66,47 @@ def main():
                 return
             
         if kk_rct.colliderect(bd_rct):
-            print("GAMEOVER")
+            screen.blit(kkOVER_img)
             return
 
         screen.blit(bg_img, [0, 0])
+
         
         """こうかとん"""
         key_lst = pg.key.get_pressed()
         sum_mv = [0, 0]
+        
+            
+            
         for key, mv in delta.items():
-            if key_lst[key]:
-                sum_mv[0] += mv[0]
-                sum_mv[1] += mv[1]
+                if key_lst[key]:
+                    sum_mv[0] += mv[0] # 練習３：横方向の合計移動量
+                    sum_mv[1] += mv[1] # 練習３：縦方向の合計移動量
+
         kk_rct.move_ip(sum_mv[0], sum_mv[1])
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
-        screen.blit(kk_img, kk_rct) #練習3
+        screen.blit(kk_img, kk_rct) # 練習３：移動後の座標に表示させる
 
         """ばくだん"""
-        bd_rct.move_ip(vx, vy) #練習2:爆弾を動かす
+        avx, avy= vx*kasoku[min(tmr//500, 9)], vy*kasoku[min(tmr//500, 9)] #加速度を変化させる
+        bd_rct.move_ip(avx, avy) #練習2:爆弾を動かす
         yoko, tate = check_bound(bd_rct)
-        if not yoko:
+        if not yoko: # 練習４：横方向にはみ出たら
             vx *= -1
-        if not tate:
+        if not tate: # 練習４：縦方向にはみ出たら
             vy *= -1
+
+        
+
+        
+
+        
         screen.blit(bd_img, bd_rct)  #練習1:Rectにランダムな座標に作成
         
         pg.display.update()
         tmr += 1
-        clock.tick(50)
+        clock.tick(60)
 
 
 if __name__ == "__main__":
