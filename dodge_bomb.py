@@ -40,6 +40,7 @@ def main():
     kk_rct.center = (900, 400)
     """GAMEOVER"""
     kkOVER_img = pg.image.load("ex02/fig/8.png")
+    kkOVER_img = pg.transform.rotozoom(kkOVER_img, 0, 2.0)
     """こうかとんrotozoom"""
     kk2_img = pg.transform.flip(kk_img, True, False)
     kk2_img = pg.transform.rotozoom(kk_img, 90, 1.0)
@@ -66,18 +67,18 @@ def main():
                 return
             
         if kk_rct.colliderect(bd_rct):
-            screen.blit(kkOVER_img)
-            return
+            screen.blit(kkOVER_img, kk_rct)
+            
+            pg.display.update()  #演習3: 画面を更新する
+            screen.blit(bg_img, [0,0])
+            return 
 
         screen.blit(bg_img, [0, 0])
-
-        
+ 
         """こうかとん"""
         key_lst = pg.key.get_pressed()
-        sum_mv = [0, 0]
-        
-            
-            
+        sum_mv = [0, 0] 
+
         for key, mv in delta.items():
                 if key_lst[key]:
                     sum_mv[0] += mv[0] # 練習３：横方向の合計移動量
