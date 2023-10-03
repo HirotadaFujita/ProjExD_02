@@ -67,6 +67,7 @@ def main():
                 return
             
         if kk_rct.colliderect(bd_rct):
+            print("GAMEOVER")
             screen.blit(kkOVER_img, kk_rct)
             
             pg.display.update()  #演習3: 画面を更新する
